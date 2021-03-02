@@ -9,7 +9,7 @@ public class PRVP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("/home/gabriel/prvp/pr07");
+		manarq.carregarArquivo("C:\\Users\\cp\\Documents\\Martins\\C-pvrp\\pr02");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 	
@@ -68,8 +68,10 @@ public class PRVP {
 					if(combinacao.charAt(l)== '1') {	
 						//randomNum2 = rand.nextInt((m - 0));
 						while(true) {
+							System.out.println("Veiculo: " + (randomNum2+1) + " dia: " + (l+1) + " " +maxLoud.get(randomNum2+l));
+
 							int auxiliar = maxLoud.get(randomNum2+l) + clientes.get(randomNum).demand;
-							if(auxiliar <= veiculos.get(randomNum2).maxLoud.get(l)) {// && maxDuration.get(randomNum2+l) <= veiculos.get(randomNum2).maxDuration.get(l)) {
+							if(randomNum2 == m-1) {
 								maxLoud.set(randomNum2+l, maxLoud.get(randomNum2+l)+clientes.get(randomNum).demand);
 								maxDuration.set(randomNum2+l, maxDuration.get(randomNum2+l)+clientes.get(randomNum).serviceDuration);
 								totalDuration += maxDuration.get(randomNum2+l);
@@ -77,7 +79,20 @@ public class PRVP {
 								veiculos.get(randomNum2).lotacaoAtingida.set(l, (double) (maxLoud.get(randomNum2+l)+clientes.get(randomNum).demand));
 								break;
 							}else {
-								randomNum2++;
+								if(auxiliar <= veiculos.get(randomNum2).maxLoud.get(l)) {// && maxDuration.get(randomNum2+l) <= veiculos.get(randomNum2).maxDuration.get(l)) {
+									
+									maxLoud.set(randomNum2+l, maxLoud.get(randomNum2+l)+clientes.get(randomNum).demand);
+									maxDuration.set(randomNum2+l, maxDuration.get(randomNum2+l)+clientes.get(randomNum).serviceDuration);
+									totalDuration += maxDuration.get(randomNum2+l);
+									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
+									veiculos.get(randomNum2).lotacaoAtingida.set(l, (double) (maxLoud.get(randomNum2+l)+clientes.get(randomNum).demand));
+									break;
+								}else {
+									randomNum2++;
+									if(randomNum2 >= m) {
+										return new ArrayList<Veiculo>();
+									}
+								}
 							}
 						}
 						

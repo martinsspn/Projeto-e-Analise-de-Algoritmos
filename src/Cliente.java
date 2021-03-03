@@ -11,8 +11,7 @@ public class Cliente {
 	public Integer numberCombinations;
 	public List<Integer> possibleVisitCombinations;
 	
-	public Cliente(Integer numeroCliente, Double xCoordinate, Double yCoordinate, Integer serviceDuration,
-			Integer demand, Integer frequencyOfVisit, Integer numberCombinations,
+	public Cliente(Integer numeroCliente, Double xCoordinate, Double yCoordinate, Integer demand, Integer serviceDuration, Integer frequencyOfVisit, Integer numberCombinations,
 			List<Integer> possibleVisitCombinations) {
 		super();
 		this.numeroCliente = numeroCliente;

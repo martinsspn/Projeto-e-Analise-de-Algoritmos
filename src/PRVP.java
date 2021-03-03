@@ -9,12 +9,18 @@ public class PRVP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr02");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 	
 		List<Veiculo> veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
-		int x = checarSolucao(veiculos, manarq.clientes, manarq.t);
+		int x=5;
+		for(;;) {
+			x = checarSolucao(veiculos, manarq.clientes, manarq.t);
+			if(x==0) {
+				break;
+			}
+		}
 		for(int i=0;i<manarq.getT();i++) {
 			for(int j=0; j<veiculos.size();j++) {
 				veiculos.get(j).getRotaDias().get(i).add(0, 0);
@@ -70,19 +76,24 @@ public class PRVP {
 				}
 				for(int l=t-1; l>=0; l--) {
 					if(combinacao.charAt(l)== '1') {
-						randomNum2 = rand.nextInt(m);
+						//randomNum2 = rand.nextInt(m);
+						randomNum2 = 0;
 						while(true){
 							int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
 							int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
-							if(auxiliar <= veiculos.get(randomNum2).maxLoud.get(l) && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l)) {			
+							if((auxiliar <= veiculos.get(randomNum2).maxLoud.get(l) && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l))) {			
 								maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
 								maxDuration.get(randomNum2).set(l, maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).serviceDuration);
 								veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
 								break;
 							}else {
-								randomNum2 = rand.nextInt(m); 
+								//randomNum2 = rand.nextInt(m);
+								randomNum2++;
+								
+								if(randomNum2 >= m)
+									break;
 							}
-						}					
+						}		
 					}
 				}
 			}

@@ -9,13 +9,13 @@ public class PRVP {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\p32");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 	
 		List<Veiculo> veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
 		int x=5;
-		for(;;) {
+		for(int i=0;i<100;i++) {
 			x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 			if(x==0) {
 				break;

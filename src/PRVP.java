@@ -4,6 +4,7 @@ public class PRVP {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		List<List<Double>> matriz = new ArrayList<List<Double>>();
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
 		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
 		//m: número de veiculos. n: número de clientes. t: número de dias
@@ -149,6 +150,14 @@ public class PRVP {
 			x += clientes.get(veiculos.get(j).getRotaDias().get(i).get(k)).getServiceDuration();
 		}
 		return x;
+	}
+	public void gerarMatriz(List<Cliente> clientes){
+		for(int k = 0; k<clientes.size(); k++) {
+			for(int j = 0; j <clientes.size(); j++) {
+				matriz.get(k).get(j).add(distance(cliente.get(k), cliente.get(j)));
+			}
+		}
+		
 	}
 }
 

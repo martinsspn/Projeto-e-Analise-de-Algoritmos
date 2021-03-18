@@ -151,13 +151,17 @@ public class PRVP {
 		}
 		return x;
 	}
-	public void gerarMatriz(List<Cliente> clientes){
+	public void gerarMatriz(List<Cliente> clientes, List<List<Double>> matriz){
 		for(int k = 0; k<clientes.size(); k++) {
 			for(int j = 0; j <clientes.size(); j++) {
-				matriz.get(k).get(j).add(distance(cliente.get(k), cliente.get(j)));
+				//matriz.get(k).get(j).add(distance(clientes.get(k), clientes.get(j)));
+				matriz.get(k).add(j, distance(clientes.get(k), clientes.get(j)));
 			}
 		}
-		
+	}
+
+	public Double distance(Cliente a, Cliente b){
+		return Math.sqrt(Math.pow(a.getxCoordinate() - b.getxCoordinate(), 2) + Math.pow(a.getyCoordinate() - b.getyCoordinate() , 2));
 	}
 }
 

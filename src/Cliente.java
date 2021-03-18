@@ -55,9 +55,7 @@ public class Cliente {
 	public List<Integer> getPossibleVisitCombinations() {
 		return possibleVisitCombinations;
 	}
-	public Double distance(Cliente a, Cliente b){
-        return Math.sqrt(Math.pow(a.getxCoordinate() - b.getxCoordinate(), 2) + Math.pow(a.getyCoordinate() - b.getyCoordinate() , 2));
-    }
+
 }
  /*i: customer number
 x: x coordinate

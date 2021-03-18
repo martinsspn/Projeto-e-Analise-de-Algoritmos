@@ -6,10 +6,10 @@ public class PRVP {
 		// TODO Auto-generated method stub
 		List<List<Double>> matriz = new ArrayList<List<Double>>();
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\p04");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
-		int opt = 1;
+		int opt = 2;
 		List<Veiculo> veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT(), opt);
 		int x=5;
 		for(int i=0;i<100;i++) {
@@ -73,9 +73,10 @@ public class PRVP {
 				}
 				for(int l=t-1; l>=0; l--) {
 					if(combinacao.charAt(l)== '1') {
-						//randomNum2 = rand.nextInt(m);
-						randomNum2 = 0;
+						randomNum2 = rand.nextInt(m);
+						List<Integer> s = new ArrayList<>();
 						while(true){
+							s.add(randomNum2);
 							if(opt == 1){
 								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
 								int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
@@ -85,10 +86,8 @@ public class PRVP {
 									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
 									break;
 								}else {
-									//randomNum2 = rand.nextInt(m);
-									randomNum2++;
-
-									if(randomNum2 >= m)
+									randomNum2 = rand.nextInt(m);
+									if(s.size() >= m)
 										break;
 								}
 							}else{
@@ -98,9 +97,8 @@ public class PRVP {
 									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
 									break;
 								}else {
-									//randomNum2 = rand.nextInt(m);
-									randomNum2++;
-									if(randomNum2 >= m)
+									randomNum2 = rand.nextInt(m);
+									if(s.size() >= m)
 										break;
 								}
 							}

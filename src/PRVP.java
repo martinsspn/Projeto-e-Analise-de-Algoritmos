@@ -1,33 +1,30 @@
 import java.util.*;
+import java.text.DecimalFormat;
 
 public class PRVP {
-	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		List<List<Double>> matriz = new ArrayList<List<Double>>();
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr01");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\p01");
+		DecimalFormat df = new DecimalFormat("#.##");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
-		int opt = 1;
 		int x=5;
+		int opt = 2;
 		List<Veiculo> veiculos = null;
 		gerarMatriz(manarq.clientes,  matriz);
-		for(int i=0;i<10;i++) {
-			veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT(), opt);
-			x = checarSolucao(veiculos, manarq.clientes, manarq.t);
-			if(x==0) {
-				break;
-			}
-		}
+		veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT(), opt);
+		x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 		for(int i=0;i<manarq.getT();i++) {
 			for(int j=0; j<veiculos.size();j++) {
 				veiculos.get(j).getRotaDias().get(i).add(0, 0);
 				veiculos.get(j).getRotaDias().get(i).add(0);
 				System.out.print((i+1)+" ");
 				System.out.print((j+1)+" ");
-				System.out.print(getLocacaoAtingida(veiculos, manarq.clientes, i, j) + " ");
-				System.out.print(getDuracaoServico(veiculos, manarq.clientes, i, j) + " ");
+				System.out.print(df.format(getLocacaoAtingida(veiculos, manarq.clientes, i, j)) + " ");
+				System.out.print(df.format(getDuracaoServico(veiculos, manarq.clientes, i, j)) + " ");
 				System.out.print(veiculos.get(j).getRotaDias().get(i));
 				System.out.println();
 			}
@@ -35,11 +32,18 @@ public class PRVP {
 		}
 		if (x == 0){
 			System.out.println("É solução!!!");
-		}else {
+		}else if(x == -1){
 			System.out.println("Não é solução :(");
+			System.out.println("Nem todos os clientes foram visitados!");
+		}else if(x == -2){
+			System.out.println("Não é solução :(");
+			System.out.println("Carga máxima ultrapassada!");
+		}else{
+			System.out.println("Não é solução :(");
+			System.out.println("Duração máxima ultrapassada!");
 		}
 	}
-	
+
 	public static List<Veiculo> construtorAleatorio(List<Cliente> clientes, List<Veiculo> veiculos, int m, int n, int t, int opt) {
 		Random rand = new Random();
 		int randomNum, randomNum2;
@@ -75,71 +79,84 @@ public class PRVP {
 				}
 				for(int l=t-1; l>=0; l--) {
 					if(combinacao.charAt(l)== '1') {
-						randomNum2 = rand.nextInt(m);
-						Set<Integer> s = new TreeSet<>();
+						int k = 0;
 						Cliente anterior;
-						while(true){
-							s.add(randomNum2);
-							if(opt == 1){
-								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
-								//int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
-								if(veiculos.get(randomNum2).rotaDias.get(l).size()>0){
-									anterior = clientes.get(veiculos.get(randomNum2).rotaDias.get(l).get(veiculos.get(randomNum2).rotaDias.get(l).size()-1));
-								}else{
-									anterior = clientes.get(0);
-								}
-								double auxiliar2 = maxDuration.get(randomNum2).get(l) + distance(anterior, clientes.get(randomNum));
-								if((auxiliar <= veiculos.get(randomNum2).maxLoud.get(l) && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l))) {
-									maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
-									maxDuration.get(randomNum2).set(l, maxDuration.get(randomNum2).get(l) + auxiliar2);
-									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
-									break;
-								}else {
-									randomNum2 = rand.nextInt(m);
-								}
-							}else{
-								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
-								if((auxiliar <= veiculos.get(randomNum2).maxLoud.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 )) {
-									maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
-									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
-									break;
-								}else {
-									randomNum2 = rand.nextInt(m);
-								}
+						while(true) {
+							int auxiliar = maxLoud.get(k).get(l) + clientes.get(randomNum).demand;
+							if (veiculos.get(k).rotaDias.get(l).size() > 0) {
+								anterior = clientes.get(veiculos.get(k).rotaDias.get(l).get(veiculos.get(k).rotaDias.get(l).size() - 1));
+							} else {
+								anterior = clientes.get(0);
 							}
-							if(s.size() >= m)
+							double auxiliar2 = maxDuration.get(k).get(l) + distance(anterior, clientes.get(randomNum));
+							if(k == m-1){
+								maxLoud.get(k).set(l, maxLoud.get(k).get(l) + clientes.get(randomNum).demand);
+								maxDuration.get(k).set(l, maxDuration.get(k).get(l) + auxiliar2);
+								veiculos.get(k).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
 								break;
-						}		
+							}
+							if (opt == 1 && auxiliar <= veiculos.get(k).maxLoud.get(l) && auxiliar2 <= veiculos.get(k).maxDuration.get(l)) {
+								if (auxiliar2 + distance(clientes.get(randomNum), clientes.get(0)) <= veiculos.get(k).maxDuration.get(l)) {
+									maxLoud.get(k).set(l, maxLoud.get(k).get(l) + clientes.get(randomNum).demand);
+									maxDuration.get(k).set(l, maxDuration.get(k).get(l) + auxiliar2);
+									veiculos.get(k).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
+									break;
+								}else{
+									k++;
+								}
+							}else if(opt == 2 && auxiliar2 <= veiculos.get(k).maxDuration.get(l)){
+								if (auxiliar2 + distance(clientes.get(randomNum), clientes.get(0)) <= veiculos.get(k).maxDuration.get(l)) {
+									maxDuration.get(k).set(l, maxDuration.get(k).get(l) + auxiliar2);
+									veiculos.get(k).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
+									break;
+								}else {
+									k++;
+								}
+							} else{
+								k++;
+							}
+						}
 					}
 				}
 			}
 		}
 		return veiculos;
 	}
-	
+
 	public static int checarSolucao(List<Veiculo> veiculos, List<Cliente> clientes, int t) {
-		for(int i=0;i<clientes.size();i++) {
-			String combinacao = Integer.toBinaryString(clientes.get(i).getFrequencyOfVisit());
+		for (Cliente cliente : clientes) {
+			String combinacao = Integer.toBinaryString(cliente.getFrequencyOfVisit());
 			int frequencia = 0;
-			if(combinacao.length() < t) {
+			if (combinacao.length() < t) {
 				int x = combinacao.length();
-				for(int j=0;j<t-x;j++) {
+				for (int j = 0; j < t - x; j++) {
 					combinacao = "0" + combinacao;
 				}
-				for(int l=t-1;l>=0;l--) {
-					for(int j=0;j<veiculos.size();j++) {
-						if(veiculos.get(j).rotaDias.get(l).contains(clientes.get(i).numeroCliente)){
+				for (int l = t - 1; l >= 0; l--) {
+					for (Veiculo veiculo : veiculos) {
+						if (veiculo.rotaDias.get(l).contains(cliente.numeroCliente)) {
 							frequencia++;
 						}
 					}
 				}
 			}
-			if(frequencia != clientes.get(i).frequencyOfVisit) {
+			if (frequencia != cliente.frequencyOfVisit) {
 				return -1;
+			}
+		}
+		for(int i=0;i<t;i++){
+			for(int j=0;j<veiculos.size();j++){
+				if(veiculos.get(i).maxLoud.get(i) > 0 && veiculos.get(j).maxLoud.get(i) < getLocacaoAtingida(veiculos, clientes, i, j)){
+					return -2;
+				}
+				if(veiculos.get(j).maxDuration.get(i) < getDuracaoServico(veiculos, clientes, i, j)){
+					return -3;
+				}
 			}
 		}
 		return 0;
 	}
+
 
 	public static double getLocacaoAtingida(List<Veiculo> veiculos, List<Cliente> clientes,int i, int j) {
 		int x = 0;
@@ -150,10 +167,11 @@ public class PRVP {
 	}
 
 	public static double getDuracaoServico(List<Veiculo> veiculos, List<Cliente> clientes,int i, int j) {
-		int x = 0;
+		double x = 0;
 		for(int k = 0; k<veiculos.get(j).getRotaDias().get(i).size(); k++) {
 			x += clientes.get(veiculos.get(j).getRotaDias().get(i).get(k)).getServiceDuration();
 		}
+		x += distance(clientes.get(clientes.size()-1), clientes.get(0));
 		return x;
 	}
 	public static void gerarMatriz(List<Cliente> clientes, List<List<Double>> matriz){

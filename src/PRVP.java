@@ -6,13 +6,15 @@ public class PRVP {
 		// TODO Auto-generated method stub
 		List<List<Double>> matriz = new ArrayList<List<Double>>();
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\p04");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr01");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
-		int opt = 2;
-		List<Veiculo> veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT(), opt);
+		int opt = 1;
 		int x=5;
-		for(int i=0;i<100;i++) {
+		List<Veiculo> veiculos = null;
+		gerarMatriz(manarq.clientes,  matriz);
+		for(int i=0;i<10;i++) {
+			veiculos = construtorAleatorio(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT(), opt);
 			x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 			if(x==0) {
 				break;
@@ -42,14 +44,14 @@ public class PRVP {
 		Random rand = new Random();
 		int randomNum, randomNum2;
 		List<List<Integer>> maxLoud = new ArrayList<List<Integer>>();
-		List<List<Integer>> maxDuration = new ArrayList<List<Integer>>();
+		List<List<Double>> maxDuration = new ArrayList<List<Double>>();
 		Set<Integer> c = new TreeSet<Integer>();
 		for(int i=0;i<m*t;i++) {
 			List<Integer> aux = new ArrayList<Integer>();
-			List<Integer> aux2 = new ArrayList<Integer>();
+			List<Double> aux2 = new ArrayList<>();
 			for(int j=0;j<t;j++) {
 				aux.add(0);
-				aux2.add(0);
+				aux2.add(0.0);
 			}
 			maxLoud.add(aux);
 			maxDuration.add(aux2);
@@ -74,21 +76,26 @@ public class PRVP {
 				for(int l=t-1; l>=0; l--) {
 					if(combinacao.charAt(l)== '1') {
 						randomNum2 = rand.nextInt(m);
-						List<Integer> s = new ArrayList<>();
+						Set<Integer> s = new TreeSet<>();
+						Cliente anterior;
 						while(true){
 							s.add(randomNum2);
 							if(opt == 1){
 								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
-								int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
+								//int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
+								if(veiculos.get(randomNum2).rotaDias.get(l).size()>0){
+									anterior = clientes.get(veiculos.get(randomNum2).rotaDias.get(l).get(veiculos.get(randomNum2).rotaDias.get(l).size()-1));
+								}else{
+									anterior = clientes.get(0);
+								}
+								double auxiliar2 = maxDuration.get(randomNum2).get(l) + distance(anterior, clientes.get(randomNum));
 								if((auxiliar <= veiculos.get(randomNum2).maxLoud.get(l) && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l))) {
 									maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
-									maxDuration.get(randomNum2).set(l, maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).serviceDuration);
+									maxDuration.get(randomNum2).set(l, maxDuration.get(randomNum2).get(l) + auxiliar2);
 									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
 									break;
 								}else {
 									randomNum2 = rand.nextInt(m);
-									if(s.size() >= m)
-										break;
 								}
 							}else{
 								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
@@ -98,10 +105,10 @@ public class PRVP {
 									break;
 								}else {
 									randomNum2 = rand.nextInt(m);
-									if(s.size() >= m)
-										break;
 								}
 							}
+							if(s.size() >= m)
+								break;
 						}		
 					}
 				}
@@ -149,16 +156,17 @@ public class PRVP {
 		}
 		return x;
 	}
-	public void gerarMatriz(List<Cliente> clientes, List<List<Double>> matriz){
+	public static void gerarMatriz(List<Cliente> clientes, List<List<Double>> matriz){
 		for(int k = 0; k<clientes.size(); k++) {
-			for(int j = 0; j <clientes.size(); j++) {
+			matriz.add(new ArrayList<>());
+			for(int j = 0; j<clientes.size(); j++) {
 				//matriz.get(k).get(j).add(distance(clientes.get(k), clientes.get(j)));
 				matriz.get(k).add(j, distance(clientes.get(k), clientes.get(j)));
 			}
 		}
 	}
 
-	public Double distance(Cliente a, Cliente b){
+	public static Double distance(Cliente a, Cliente b){
 		return Math.sqrt(Math.pow(a.getxCoordinate() - b.getxCoordinate(), 2) + Math.pow(a.getyCoordinate() - b.getyCoordinate() , 2));
 	}
 }

@@ -65,7 +65,7 @@ public class ManipuladorArquivo {
 			String linha = buffRead.readLine();
 			String[] aux = linha.split(" ");
 			m = Integer.parseInt(aux[1]);
-			n = Integer.parseInt(aux[2]);
+			n = Integer.parseInt(aux[2]) + 1;
 			t = Integer.parseInt(aux[3]);
 			//D: maximum duration of a route 
 			//Q: maximum load of a vehicle

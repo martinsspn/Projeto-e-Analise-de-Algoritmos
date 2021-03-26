@@ -1,15 +1,12 @@
-import javax.swing.event.ListDataEvent;
+
 import java.util.*;
 
 public class PRVP {
 	
 	public static void main(String[] args) {
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-<<<<<<< Updated upstream
 		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr01");
-=======
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr02");
->>>>>>> Stashed changes
+
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 		List<Veiculo> veiculos = monteCarlo(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
@@ -79,7 +76,7 @@ public class PRVP {
 						combinacao = "0" + combinacao;
 					}
 				}
-<<<<<<< Updated upstream
+
 				for (int l = t - 1; l >= 0; l--) {
 					if (combinacao.charAt(l) == '1') {
 						clienteDia.get(l).add(clientes.get(randomNum));
@@ -88,14 +85,14 @@ public class PRVP {
 			}
 		}
 		List<Integer> aux = new ArrayList<>();
-		for(int i=0;i<t;i++){
+		for(int i=0;i<t;i++) {
 			List<Cliente> anterior = new ArrayList<>();
-			for(int j=0;j<m;j++){
+			for (int j = 0; j < m; j++) {
 				randomNum = rand.nextInt(clienteDia.get(i).size());
-				while (true){
-					if(aux.contains(randomNum)){
+				while (true) {
+					if (aux.contains(randomNum)) {
 						randomNum = rand.nextInt(clienteDia.get(i).size());
-					}else{
+					} else {
 						break;
 					}
 				}
@@ -104,64 +101,29 @@ public class PRVP {
 				anterior.add(clientes.get(randomNum));
 				clienteDia.get(i).remove(clientes.get(randomNum));
 			}
-			int k=0;
-			while(clienteDia.get(i).size()>0) {
+			int k = 0;
+			while (clienteDia.get(i).size() > 0) {
 				Cliente newCliente = gerarCliente(clienteDia.get(i), anterior.get(k));
 				int auxiliar = maxLoud.get(k).get(i) + newCliente.demand;
 				double auxiliar2 = maxDuration.get(k).get(i) + distance(anterior.get(k), newCliente);
-				if((auxiliar <= veiculos.get(k).maxLoud.get(i) && auxiliar2 <= veiculos.get(k).maxDuration.get(i)) || (veiculos.get(k).maxLoud.get(i) == 0 && auxiliar2 <= veiculos.get(k).maxDuration.get(i))) {
+				if ((auxiliar <= veiculos.get(k).maxLoud.get(i) && auxiliar2 <= veiculos.get(k).maxDuration.get(i)) || (veiculos.get(k).maxLoud.get(i) == 0 && auxiliar2 <= veiculos.get(k).maxDuration.get(i))) {
 					maxLoud.get(k).set(i, maxLoud.get(k).get(i) + newCliente.demand);
 					maxDuration.get(k).set(i, maxDuration.get(k).get(i) + auxiliar2);
 					veiculos.get(k).rotaDias.get(i).add(newCliente.numeroCliente);
 					clienteDia.get(i).remove(newCliente);
 					anterior.set(k, newCliente);
-				}else{
-					if(k==m-1){
-						if(!((auxiliar <= veiculos.get(k-1).maxLoud.get(i) && auxiliar2 <= veiculos.get(k-1).maxDuration.get(i)) || (veiculos.get(k-1).maxLoud.get(i) == 0 && auxiliar2 <= veiculos.get(k-1).maxDuration.get(i))) ){
+				} else {
+					if (k == m - 1) {
+						if (!((auxiliar <= veiculos.get(k - 1).maxLoud.get(i) && auxiliar2 <= veiculos.get(k - 1).maxDuration.get(i)) || (veiculos.get(k - 1).maxLoud.get(i) == 0 && auxiliar2 <= veiculos.get(k - 1).maxDuration.get(i)))) {
 							maxLoud.get(k).set(i, maxLoud.get(k).get(i) + newCliente.demand);
 							maxDuration.get(k).set(i, maxDuration.get(k).get(i) + auxiliar2);
 							veiculos.get(k).rotaDias.get(i).add(newCliente.numeroCliente);
 							clienteDia.get(i).remove(newCliente);
 							anterior.set(k, newCliente);
 						}
-						k=0;
-					}else{
+						k = 0;
+					} else {
 						k++;
-=======
-				for(int l=t-1; l>=0; l--) {
-					if(combinacao.charAt(l)== '1') {
-						randomNum2 = rand.nextInt(m);
-						while(true){
-							if(opt == 1){
-								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
-								int auxiliar2 = maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).getServiceDuration();
-								if(randomNum2 == m-1 ||(auxiliar <= veiculos.get(randomNum2).maxLoud.get(l) && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 && auxiliar2 <= veiculos.get(randomNum2).maxDuration.get(l))) {
-									maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
-									maxDuration.get(randomNum2).set(l, maxDuration.get(randomNum2).get(l) + clientes.get(randomNum).serviceDuration);
-									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
-									break;
-								}else {
-									randomNum2 = rand.nextInt(m);
-									//randomNum2++;
-
-									if(randomNum2 >= m*n)
-										break;
-								}
-							}else{
-								int auxiliar = maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand;
-								if((auxiliar <= veiculos.get(randomNum2).maxLoud.get(l)) || (veiculos.get(randomNum2).maxLoud.get(l) == 0 )) {
-									maxLoud.get(randomNum2).set(l, maxLoud.get(randomNum2).get(l) + clientes.get(randomNum).demand);
-									veiculos.get(randomNum2).rotaDias.get(l).add(clientes.get(randomNum).numeroCliente);
-									break;
-								}else {
-									//randomNum2 = rand.nextInt(m);
-									randomNum2++;
-									if(randomNum2 >= m)
-										break;
-								}
-							}
-						}		
->>>>>>> Stashed changes
 					}
 				}
 			}

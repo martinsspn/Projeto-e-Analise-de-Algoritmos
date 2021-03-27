@@ -73,6 +73,9 @@ public class PRVP {
 		}
 		List<Integer> aux = new ArrayList<>();
 		List<Cliente> anterior = new ArrayList<>();
+		for(int i=0;i<m;i++){
+			anterior.add(clientes.get(0));
+		}
 		for(int i=0;i<t;i++) {
 			for (int j = 0; j < m; j++) {
 				randomNum = rand.nextInt(clienteDia.get(i).size());
@@ -85,7 +88,7 @@ public class PRVP {
 				}
 				aux.add(randomNum);
 				veiculos.get(j).rotaDias.get(i).add(clienteDia.get(i).get(randomNum).numeroCliente);
-				anterior.add(clienteDia.get(i).get(randomNum));
+				anterior.set(j, clienteDia.get(i).get(randomNum));
 				veiculos.get(j).cargaTotal.set(i, clienteDia.get(i).get(randomNum).demand);
 				veiculos.get(j).duracaoTotal.set(i, distance(clienteDia.get(i).get(randomNum), clientes.get(0)));
 				clienteDia.get(i).remove(randomNum);
@@ -104,7 +107,7 @@ public class PRVP {
 						veiculos.get(k).duracaoTotal.set(i, auxiliar2);
 						veiculos.get(k).rotaDias.get(i).add(newCliente.numeroCliente);
 						clienteDia.get(i).remove(newCliente);
-						anterior.set(i, newCliente);
+						anterior.set(k, newCliente);
 						break;
 					}else{
 						if(k == m-1){
@@ -112,7 +115,7 @@ public class PRVP {
 							veiculos.get(m-1).duracaoTotal.set(i, auxiliar2);
 							veiculos.get(m-1).rotaDias.get(i).add(newCliente.numeroCliente);
 							clienteDia.get(i).remove(newCliente);
-							anterior.set(i, newCliente);
+							anterior.set(k, newCliente);
 							break;
 						}
 						k++;

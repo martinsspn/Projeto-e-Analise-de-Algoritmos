@@ -10,15 +10,16 @@ import java.util.Scanner;
 public class ManipuladorArquivo {
 
 	public int m, n, t;
-	public List<Double> Q, D;
+	public List<Double> D;
+	public List<Integer> Q;
 	public List<Cliente> clientes;
 	public List<Veiculo> veiculos;
         
     public ManipuladorArquivo() {
-    	Q = new ArrayList<Double>();
-    	D = new ArrayList<Double>();
-    	clientes = new ArrayList<Cliente>();
-    	veiculos = new ArrayList<Veiculo>();
+    	Q = new ArrayList<>();
+    	D = new ArrayList<>();
+    	clientes = new ArrayList<>();
+    	veiculos = new ArrayList<>();
     }
 
 	public int getM() {
@@ -33,7 +34,7 @@ public class ManipuladorArquivo {
 		return t;
 	}
 
-	public List<Double> getQ() {
+	public List<Integer> getQ() {
 		return Q;
 	}
 
@@ -69,13 +70,13 @@ public class ManipuladorArquivo {
 			t = Integer.parseInt(aux[3]);
 			//D: maximum duration of a route 
 			//Q: maximum load of a vehicle
-			D = new ArrayList<Double>();
-			Q = new ArrayList<Double>();
+			D = new ArrayList<>();
+			Q = new ArrayList<>();
 			for(int i=0;i<t;i++) {
 				linha = buffRead.readLine();
 				aux = linha.split(" ");
 				D.add(Double.parseDouble(aux[0]));
-				Q.add(Double.parseDouble(aux[1]));
+				Q.add(Integer.parseInt(aux[1]));
 			}
 			for(int i=0;i<m;i++) {
 				Veiculo veiculo = new Veiculo(t);

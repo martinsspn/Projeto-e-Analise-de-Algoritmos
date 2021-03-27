@@ -3,23 +3,23 @@ import java.util.List;
 
 public class Veiculo {
 	public List<List<Integer>> rotaDias;
-	public List<Double> cargaMaxima;
+	public List<Integer> cargaMaxima;
 	public List<Double> duracaoMaxima;
-	public List<Double> cargaTotal;
+	public List<Integer> cargaTotal;
 	public List<Double> duracaoTotal;
 
 	public Veiculo(int t) {
-		rotaDias = new ArrayList<List<Integer>>();
-		cargaMaxima = new ArrayList<Double>();
-		duracaoMaxima = new ArrayList<Double>();
-		cargaTotal = new ArrayList<Double>();
+		rotaDias = new ArrayList<>();
+		cargaMaxima = new ArrayList<>();
+		duracaoMaxima = new ArrayList<>();
+		cargaTotal = new ArrayList<>();
 		duracaoTotal = new ArrayList<>();
 		for(int i=0;i<t;i++) {
 			List<Integer> aux = new ArrayList<Integer>();
 			rotaDias.add(aux);
-			cargaMaxima.add(0.0);
+			cargaMaxima.add(0);
 			duracaoMaxima.add(0.0);
-			cargaTotal.add(0.0);
+			cargaTotal.add(0);
 			duracaoTotal.add(0.0);
 		}
 	}
@@ -32,11 +32,11 @@ public class Veiculo {
 		this.duracaoTotal = duracaoTotal;
 	}
 
-	public List<Double> getCargaMaxima() {
+	public List<Integer> getCargaMaxima() {
 		return cargaMaxima;
 	}
 
-	public void setCargaMaxima(List<Double> cargaMaxima) {
+	public void setCargaMaxima(List<Integer> cargaMaxima) {
 		this.cargaMaxima = cargaMaxima;
 	}
 
@@ -48,11 +48,11 @@ public class Veiculo {
 		this.duracaoMaxima = duracaoMaxima;
 	}
 
-	public List<Double> getCargaTotal() {
+	public List<Integer> getCargaTotal() {
 		return cargaTotal;
 	}
 
-	public void setCargaTotal(List<Double> cargaTotal) {
+	public void setCargaTotal(List<Integer> cargaTotal) {
 		this.cargaTotal = cargaTotal;
 	}
 	public List<List<Integer>> getRotaDias() {

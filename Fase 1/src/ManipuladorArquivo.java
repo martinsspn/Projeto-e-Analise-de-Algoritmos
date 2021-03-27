@@ -79,8 +79,8 @@ public class ManipuladorArquivo {
 			}
 			for(int i=0;i<m;i++) {
 				Veiculo veiculo = new Veiculo(t);
-				veiculo.maxDuration = Q;
-				veiculo.maxLoud = D;
+				veiculo.maxDuration = D;
+				veiculo.maxLoud = Q;
 				veiculos.add(veiculo);
 			}
 			clientes = new ArrayList<Cliente>();

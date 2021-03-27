@@ -5,8 +5,7 @@ public class PRVP {
 	
 	public static void main(String[] args) {
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr01");
-
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 		List<Veiculo> veiculos = monteCarlo(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
@@ -17,8 +16,8 @@ public class PRVP {
 				veiculos.get(j).getRotaDias().get(i).add(0);
 				System.out.print((i+1)+" ");
 				System.out.print((j+1)+" ");
-				System.out.print(getLocacaoAtingida(veiculos, manarq.clientes, i, j) + " ");
 				System.out.print(getDuracaoServico(veiculos, manarq.clientes, i, j) + " ");
+				System.out.print(getLocacaoAtingida(veiculos, manarq.clientes, i, j) + " ");
 				System.out.print(veiculos.get(j).getRotaDias().get(i));
 				System.out.println();
 			}
@@ -41,23 +40,13 @@ public class PRVP {
 	public static List<Veiculo> monteCarlo(List<Cliente> clientes, List<Veiculo> veiculos, int m, int n, int t){
 		Random rand = new Random();
 		int randomNum, randomNum2;
-		List<List<Integer>> maxLoud = new ArrayList<List<Integer>>();
-		List<List<Double>> maxDuration = new ArrayList<List<Double>>();
+		List<Integer> cargaTotal = new ArrayList<>();
+		List<Double> tempoTotal = new ArrayList<>();
 		Set<Integer> c = new TreeSet<Integer>();
 		List<List<Cliente>> clienteDia = new ArrayList<>();
 		for(int i=0;i</*m**/t;i++) {
 			clienteDia.add(new ArrayList<>());
 			clienteDia.set(i, new ArrayList<>());
-		}
-		for(int i=0;i<m*t;i++) {
-			List<Integer> aux = new ArrayList<Integer>();
-			List<Double> aux2 = new ArrayList<>();
-			for(int j=0;j<t;j++) {
-				aux.add(0);
-				aux2.add(0.0);
-			}
-			maxLoud.add(aux);
-			maxDuration.add(aux2);
 		}
 		while(c.size() != n) {
 			randomNum = rand.nextInt(n);
@@ -76,7 +65,6 @@ public class PRVP {
 						combinacao = "0" + combinacao;
 					}
 				}
-
 				for (int l = t - 1; l >= 0; l--) {
 					if (combinacao.charAt(l) == '1') {
 						clienteDia.get(l).add(clientes.get(randomNum));
@@ -85,8 +73,8 @@ public class PRVP {
 			}
 		}
 		List<Integer> aux = new ArrayList<>();
+		List<Cliente> anterior = new ArrayList<>();
 		for(int i=0;i<t;i++) {
-			List<Cliente> anterior = new ArrayList<>();
 			for (int j = 0; j < m; j++) {
 				randomNum = rand.nextInt(clienteDia.get(i).size());
 				while (true) {
@@ -97,14 +85,51 @@ public class PRVP {
 					}
 				}
 				aux.add(randomNum);
-				veiculos.get(j).rotaDias.get(i).add(clientes.get(randomNum).numeroCliente);
-				anterior.add(clientes.get(randomNum));
-				clienteDia.get(i).remove(clientes.get(randomNum));
+				veiculos.get(j).rotaDias.get(i).add(clienteDia.get(i).get(randomNum).numeroCliente);
+				anterior.add(clienteDia.get(i).get(randomNum));
+				cargaTotal.add(clienteDia.get(i).get(randomNum).demand);
+				tempoTotal.add(distance(clienteDia.get(i).get(randomNum), clientes.get(0)));
+				clienteDia.get(i).remove(randomNum);
 			}
 			int k = 0;
 			while (clienteDia.get(i).size() > 0) {
+				Set<Integer> check = new TreeSet<>();
+				if(k > m-1){
+					k = 0;
+				}
 				Cliente newCliente = gerarCliente(clienteDia.get(i), anterior.get(k));
+				while(true){
+					check.add(k);
+					double auxiliar = veiculos.get(k).getCargaTotal().get(i) + newCliente.demand;
+					double auxiliar2 = veiculos.get(k).duracaoTotal.get(i) + distance(newCliente, anterior.get(i));
+					double auxiliar3 = auxiliar2 + distance(newCliente, clientes.get(0));
+					if(auxiliar <= veiculos.get(k).cargaMaxima.get(i) && auxiliar2 <= veiculos.get(k).duracaoMaxima.get(i) && auxiliar3 <= veiculos.get(k).duracaoMaxima.get(i)){
+						System.out.println(auxiliar + " " + veiculos.get(k).cargaMaxima.get(i));
+						veiculos.get(k).cargaTotal.set(i, auxiliar);
+						veiculos.get(k).duracaoTotal.set(i, auxiliar2);
+						veiculos.get(k).rotaDias.get(i).add(newCliente.numeroCliente);
+						clienteDia.get(i).remove(newCliente);
+						anterior.set(k, newCliente);
+						//k++;
+						break;
+					}else{
+						k++;
+						if(k == m-1 && check.size() >= m){
+							veiculos.get(m-1).cargaTotal.set(i, auxiliar);
+							veiculos.get(m-1).duracaoTotal.set(i, auxiliar2);
+							veiculos.get(m-1).rotaDias.get(i).add(newCliente.numeroCliente);
+							clienteDia.get(i).remove(newCliente);
+							anterior.set(m-1, newCliente);
+							break;
+						}
+						if(k > m-1){
+							k = 0;
+						}
+					}
+				}
+				/*
 				int auxiliar = maxLoud.get(k).get(i) + newCliente.demand;
+
 				double auxiliar2 = maxDuration.get(k).get(i) + distance(anterior.get(k), newCliente);
 				if ((auxiliar <= veiculos.get(k).maxLoud.get(i) && auxiliar2 <= veiculos.get(k).maxDuration.get(i)) || (veiculos.get(k).maxLoud.get(i) == 0 && auxiliar2 <= veiculos.get(k).maxDuration.get(i))) {
 					maxLoud.get(k).set(i, maxLoud.get(k).get(i) + newCliente.demand);
@@ -126,6 +151,8 @@ public class PRVP {
 						k++;
 					}
 				}
+
+				 */
 			}
 		}
 		return veiculos;
@@ -141,7 +168,7 @@ public class PRVP {
 		}else{
 			numeroAleatorio = rand.nextInt(clientes.size());
 		}
-		return clientes.get(0);
+		return clientes.get(numeroAleatorio);
 	}
 
 	public static List<Cliente> quickSortCliente(List<Cliente> a, Cliente anterior, int ini, int fim){
@@ -194,10 +221,10 @@ public class PRVP {
 		}
 		for(int i=0;i<t;i++){
 			for(int j=0;j<veiculos.size();j++){
-				if(veiculos.get(i).maxLoud.get(i) > 0 && veiculos.get(j).maxLoud.get(i) < getLocacaoAtingida(veiculos, clientes, i, j)){
+				if(veiculos.get(i).cargaMaxima.get(i) > 0 && veiculos.get(j).cargaMaxima.get(i) < getLocacaoAtingida(veiculos, clientes, i, j)){
 					return -2;
 				}
-				if(veiculos.get(j).maxDuration.get(i) < getDuracaoServico(veiculos, clientes, i, j)){
+				if(veiculos.get(j).duracaoMaxima.get(i) < getDuracaoServico(veiculos, clientes, i, j)){
 					return -3;
 				}
 			}

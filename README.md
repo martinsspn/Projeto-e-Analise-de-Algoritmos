@@ -8,3 +8,7 @@ Os diretórios presentes nesse Zip são os projetos utilizados na IDE IntelliJ I
 
 Fase 1: representa o projeto referente a heurística feita pelo método de construção aleatória.
 Fase 2: representa o projeto referente a heurística feita pelo método de Monte Carlo.
+
+Para rodar o algoritmo é necessário um banco de instâncias, que poderá ser encontrado nesse repositório.
+Basta abrir o projeto na IDE, e no comando manarq.carregarArquivo(path) informar o path da instância que você deseja utilizar.
+Após isso basta rodar o código na IDE que o resultado aparecerá no console.

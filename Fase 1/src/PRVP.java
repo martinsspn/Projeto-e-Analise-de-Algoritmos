@@ -7,7 +7,7 @@ public class PRVP {
 		// TODO Auto-generated method stub
 		List<List<Double>> matriz = new ArrayList<List<Double>>();
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr01");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
 		DecimalFormat df = new DecimalFormat("#.##");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
@@ -23,8 +23,8 @@ public class PRVP {
 				veiculos.get(j).getRotaDias().get(i).add(0);
 				System.out.print((i+1)+" ");
 				System.out.print((j+1)+" ");
-				System.out.print(df.format(getLocacaoAtingida(veiculos, manarq.clientes, i, j)) + " ");
 				System.out.print(df.format(getDuracaoServico(veiculos, manarq.clientes, i, j)) + " ");
+				System.out.print(df.format(getLocacaoAtingida(veiculos, manarq.clientes, i, j)) + " ");
 				System.out.print(veiculos.get(j).getRotaDias().get(i));
 				System.out.println();
 			}

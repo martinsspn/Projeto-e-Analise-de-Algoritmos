@@ -5,7 +5,7 @@ public class PRVP {
 	
 	public static void main(String[] args) {
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 		List<Veiculo> veiculos = monteCarlo(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
@@ -186,7 +186,7 @@ public class PRVP {
 		}
 		for(int i=0;i<t;i++){
 			for(int j=0;j<veiculos.size();j++){
-				if(veiculos.get(i).cargaMaxima.get(i) > 0 && veiculos.get(j).cargaMaxima.get(i) < getLocacaoAtingida(veiculos, clientes, i, j)){
+				if(veiculos.get(j).cargaMaxima.get(i) > 0 && veiculos.get(j).cargaMaxima.get(i) < getLocacaoAtingida(veiculos, clientes, i, j)){
 					return -2;
 				}
 				if(veiculos.get(j).duracaoMaxima.get(i) < getDuracaoServico(veiculos, clientes, i, j)){

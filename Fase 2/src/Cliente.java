@@ -11,7 +11,7 @@ public class Cliente {
 	public Integer numberCombinations;
 	public List<Integer> possibleVisitCombinations;
 	
-	public Cliente(Integer numeroCliente, Double xCoordinate, Double yCoordinate, Integer demand, Integer serviceDuration, Integer frequencyOfVisit, Integer numberCombinations,
+	public Cliente(Integer numeroCliente, Double xCoordinate, Double yCoordinate, Integer serviceDuration, Integer demand, Integer frequencyOfVisit, Integer numberCombinations,
 			List<Integer> possibleVisitCombinations) {
 		super();
 		this.numeroCliente = numeroCliente;
@@ -55,9 +55,7 @@ public class Cliente {
 	public List<Integer> getPossibleVisitCombinations() {
 		return possibleVisitCombinations;
 	}
-	public Double distance(Cliente a, Cliente b){
-        return Math.sqrt(Math.pow(a.getxCoordinate() - b.getxCoordinate(), 2) + Math.pow(a.getyCoordinate() - b.getyCoordinate() , 2));
-    }
+
 }
  /*i: customer number
 x: x coordinate

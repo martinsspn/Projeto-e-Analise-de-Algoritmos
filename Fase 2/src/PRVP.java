@@ -125,7 +125,7 @@ public class PRVP {
 	
 	public static List<Veiculo> buscaLocal(List<Veiculo> veiculos){
 		while(true){
-			List<Veiculo> veiculosCopia = veiculos;
+			List<Veiculo> veiculosCopia = veiculos.copy();
 			veiculosCopia = pertubar(veiculosCopia);
 			if(){
 				veiculos = veiculosCopia;

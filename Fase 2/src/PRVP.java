@@ -122,7 +122,20 @@ public class PRVP {
 		}
 		return veiculos;
 	}
-
+	
+	public static List<Veiculo> buscaLocal(List<Veiculo> veiculos){
+		while(true){
+			List<Veiculo> veiculosCopia = veiculos;
+			veiculosCopia = pertubar(veiculosCopia);
+			if(){
+				veiculos = veiculosCopia;
+			}
+			else{
+				return veiculos;
+				
+			}
+		}
+	}
 
 	public static Cliente gerarCliente(List<Cliente> clientes, Cliente anterior){
 		quickSortCliente(clientes, anterior, 0, clientes.size());

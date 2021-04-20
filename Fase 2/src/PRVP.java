@@ -122,8 +122,76 @@ public class PRVP {
 		}
 		return veiculos;
 	}
-
-
+	
+	public static List<Veiculo> buscaLocal(List<Veiculo> veiculos){
+		while(true){
+			List<Veiculo> veiculosCopia = veiculos.copy();
+			veiculosCopia = pertubar(veiculosCopia);
+			if(verificar(veiculos, veiculosCopia)){
+				veiculos = veiculosCopia;
+			}
+			else{
+				return veiculos;
+				
+			}
+		}
+	}
+	
+	public static Boolean verificar(List<Veiculo> veiculos, List<Veiculo> veiculosCopia){
+		int aux = veiculos.size() - 1;
+		int v = 0;
+		int vc = 0;
+		for(int j=0;j<veiculos.get(aux).getCargaTotal().size();j++){
+			if(veiculos.get(aux).getCargaTotal()(aux) > veiculos.get(aux).getCargaMaxima()(aux)){
+				if(veiculosCopia.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaMaxima()(aux)){
+					if(veiculos.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaTotal()(aux)){
+						v = 1 + v;
+					}
+					else{
+						vc = 1 + vc;
+					}
+				}
+				else{
+					v = 1 + v;	
+				}
+			}else if(veiculosCopia.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaMaxima()(aux)){
+				vc = 1 + vc;
+			}
+		
+		}
+		if(vc < v){
+			return true;
+		}
+		else if(v < vc){
+			return false;
+		}
+		else if(v == vc && v !=0){
+			return true;
+		}
+		
+		double duracacaoV = 0;
+		double duracacaoVC = 0;
+		double sum = 0;
+		for (Veiculo v : veiculos){
+			for(int j=0;j<v.getDuracaoTotal().size(); j++){
+				sum = sum + v.getDuracaoTotal()(j);
+			}
+			duracacaoV = duracacaoV + sum;
+		}
+		for (Veiculo v : veiculosCopia){
+			for(int j=0;j<v.getDuracaoTotal().size(); j++){
+				sum = sum + v.getDuracaoTotal()(j);
+			}
+			duracacaoVC = duracacaoVC + sum;
+		}
+		if(duracacaoVC <= duracacaoV){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
 	public static Cliente gerarCliente(List<Cliente> clientes, Cliente anterior){
 		quickSortCliente(clientes, anterior, 0, clientes.size());
 		Random rand = new Random();

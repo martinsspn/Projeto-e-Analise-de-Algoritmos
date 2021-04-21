@@ -6,10 +6,11 @@ public class PRVP {
 	
 	public static void main(String[] args) {
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 		List<Veiculo> veiculos = monteCarlo(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
+		List<Veiculo> copy = copiarVeiculos(veiculos);
 		int x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 		double aux, aux2;
 		for(int i=0;i<manarq.getT();i++) {
@@ -40,7 +41,7 @@ public class PRVP {
 			System.out.println("Duração máxima ultrapassada!");
 		}
 
-		veiculos = buscaLocal(veiculos, manarq.clientes);
+		veiculos = buscaLocal(copy, manarq.clientes);
 		x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 		for(int i=0;i<manarq.getT();i++) {
 			for(int j=0; j<veiculos.size();j++) {
@@ -252,12 +253,20 @@ public class PRVP {
 
 	public static List<Veiculo> trocarCarro(List<Veiculo> veiculos, List<Cliente> clientes){
 		Random random = new Random();
-		int r1, r2, r3, r4, aux, min, vc;
+		int r1, r2, r3, r4, aux, min, max,vc;
 		for(int i=0; i<veiculos.get(0).rotaDias.size(); i++){
-			if(veiculos.get(veiculos.size()-1).cargaTotal.get(i) > veiculos.get(veiculos.size()-1).cargaMaxima.get(i)){
-				r2 = random.nextInt(veiculos.get(veiculos.size()-1).rotaDias.get(i).size());
-				aux = veiculos.get(veiculos.size()-1).rotaDias.get(i).get(r2);
-				veiculos.get(veiculos.size()-1).rotaDias.get(i).remove(r2);
+			max = 0;
+			vc = 0;
+			for(int j=0;j<veiculos.size();j++){
+				if(max < veiculos.get(j).cargaTotal.get(i)){
+					max = veiculos.get(j).cargaTotal.get(i);
+					vc = j;
+				}
+			}
+			if(veiculos.get(vc).cargaTotal.get(i) > veiculos.get(vc).cargaMaxima.get(i)){
+				r2 = random.nextInt(veiculos.get(vc).rotaDias.get(i).size());
+				aux = veiculos.get(vc).rotaDias.get(i).get(r2);
+				veiculos.get(vc).rotaDias.get(i).remove(r2);
 				Cliente cliente = null;
 				for(Cliente c: clientes){
 					if (c.numeroCliente == aux){
@@ -265,8 +274,8 @@ public class PRVP {
 						break;
 					}
 				}
-				veiculos.get(veiculos.size()-1).cargaTotal.set(i, veiculos.get(veiculos.size()-1).cargaTotal.get(i) - cliente.demand);
-				veiculos.get(veiculos.size()-1).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, veiculos.size()-1));
+				veiculos.get(vc).cargaTotal.set(i, veiculos.get(vc).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(vc).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, vc));
 
 				min = veiculos.get(0).cargaTotal.get(i);
 				vc = 0;
@@ -278,9 +287,8 @@ public class PRVP {
 				}
 				r4 = random.nextInt(veiculos.get(vc).rotaDias.get(i).size()-1);
 				veiculos.get(vc).rotaDias.get(i).add(r4, aux);
-				veiculos.get(vc).cargaTotal.set(i, veiculos.get(vc).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(vc).cargaTotal.set(i, veiculos.get(vc).cargaTotal.get(i) + cliente.demand);
 				veiculos.get(vc).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, vc));
-
 			}else{
 				r1 = random.nextInt(veiculos.size());
 				r2 = random.nextInt(veiculos.get(r1).rotaDias.get(i).size());
@@ -295,13 +303,12 @@ public class PRVP {
 				}
 				veiculos.get(r1).cargaTotal.set(i, veiculos.get(r1).cargaTotal.get(i) - cliente.demand);
 				veiculos.get(r1).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, r1));
-
 				do {
 					r3 = random.nextInt(veiculos.size());
 				} while (r1 == r3);
 				r4 = random.nextInt(veiculos.get(r3).rotaDias.get(i).size()-1);
 				veiculos.get(r3).rotaDias.get(i).add(r4, aux);
-				veiculos.get(r3).cargaTotal.set(i, veiculos.get(r3).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(r3).cargaTotal.set(i, veiculos.get(r3).cargaTotal.get(i) + cliente.demand);
 				veiculos.get(r3).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, r3));
 			}
 		}

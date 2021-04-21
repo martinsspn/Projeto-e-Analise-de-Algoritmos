@@ -1,4 +1,5 @@
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class PRVP {
@@ -38,6 +39,37 @@ public class PRVP {
 			System.out.println("Não é solução :(");
 			System.out.println("Duração máxima ultrapassada!");
 		}
+
+		veiculos = buscaLocal(veiculos, manarq.clientes);
+		x = checarSolucao(veiculos, manarq.clientes, manarq.t);
+		for(int i=0;i<manarq.getT();i++) {
+			for(int j=0; j<veiculos.size();j++) {
+				aux = getDuracaoServico(veiculos, manarq.clientes, i, j);
+				aux2 = getLocacaoAtingida(veiculos, manarq.clientes, i, j);
+				veiculos.get(j).getRotaDias().get(i).add(0, 0);
+				veiculos.get(j).getRotaDias().get(i).add(0);
+				System.out.print((i+1)+" ");
+				System.out.print((j+1)+" ");
+				System.out.print(aux + " ");
+				System.out.print(aux2 + " ");
+				System.out.print(veiculos.get(j).getRotaDias().get(i));
+				System.out.println();
+			}
+			System.out.println();
+		}
+		if (x == 0){
+			System.out.println("É solução!!!");
+		}else if(x == -1){
+			System.out.println("Não é solução :(");
+			System.out.println("Nem todos os clientes foram visitados!");
+		}else if(x == -2){
+			System.out.println("Não é solução :(");
+			System.out.println("Carga máxima ultrapassada!");
+		}else{
+			System.out.println("Não é solução :(");
+			System.out.println("Duração máxima ultrapassada!");
+		}
+
 	}
 
 	public static List<Veiculo> monteCarlo(List<Cliente> clientes, List<Veiculo> veiculos, int m, int n, int t){
@@ -123,28 +155,51 @@ public class PRVP {
 		return veiculos;
 	}
 	
-	public static List<Veiculo> buscaLocal(List<Veiculo> veiculos){
+	public static List<Veiculo> buscaLocal(List<Veiculo> veiculos, List<Cliente> clientes){
+		int it = 0;
 		while(true){
-			List<Veiculo> veiculosCopia = veiculos.copy();
-			veiculosCopia = pertubar(veiculosCopia);
+			List<Veiculo> veiculosCopia = copiarVeiculos(veiculos);
+			veiculosCopia = pertubar(veiculosCopia, clientes, 1);
 			if(verificar(veiculos, veiculosCopia)){
 				veiculos = veiculosCopia;
+				it++;
 			}
 			else{
+				System.out.println("Numero de iterações:" + (it+1));
 				return veiculos;
-				
 			}
 		}
 	}
-	
+
+	public static List<Veiculo> copiarVeiculos(List<Veiculo> veiculos){
+		List<Veiculo> copia = new ArrayList<>();
+		for (Veiculo veiculo : veiculos) {
+			Veiculo v = new Veiculo(veiculos.get(0).rotaDias.size());
+			for(int i=0;i<v.rotaDias.size();i++){
+				List<Integer> auxiliar = new ArrayList<>(veiculo.rotaDias.get(i));
+				v.rotaDias.set(i, auxiliar);
+			}
+			List<Integer> auxiliar = new ArrayList<>(veiculo.cargaMaxima);
+			v.cargaMaxima = auxiliar;
+			auxiliar = new ArrayList<>(veiculo.cargaTotal);
+			v.cargaTotal = auxiliar;
+			List<Double> auxiliar2 = new ArrayList<>(veiculo.duracaoMaxima);
+			v.duracaoMaxima = auxiliar2;
+			auxiliar2 = new ArrayList<>(veiculo.duracaoTotal);
+			v.duracaoTotal = auxiliar2;
+			copia.add(v);
+		}
+		return copia;
+	}
+
 	public static Boolean verificar(List<Veiculo> veiculos, List<Veiculo> veiculosCopia){
 		int aux = veiculos.size() - 1;
 		int v = 0;
 		int vc = 0;
 		for(int j=0;j<veiculos.get(aux).getCargaTotal().size();j++){
-			if(veiculos.get(aux).getCargaTotal()(aux) > veiculos.get(aux).getCargaMaxima()(aux)){
-				if(veiculosCopia.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaMaxima()(aux)){
-					if(veiculos.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaTotal()(aux)){
+			if(veiculos.get(aux).getCargaTotal().get(j) > veiculos.get(aux).getCargaMaxima().get(j)){
+				if(veiculosCopia.get(aux).getCargaTotal().get(j) > veiculosCopia.get(aux).getCargaMaxima().get(j)){
+					if(veiculos.get(aux).getCargaTotal().get(j) > veiculosCopia.get(aux).getCargaTotal().get(j)){
 						v = 1 + v;
 					}
 					else{
@@ -152,12 +207,11 @@ public class PRVP {
 					}
 				}
 				else{
-					v = 1 + v;	
+					v = 1 + v;
 				}
-			}else if(veiculosCopia.get(aux).getCargaTotal()(aux) > veiculosCopia.get(aux).getCargaMaxima()(aux)){
+			}else if(veiculosCopia.get(aux).getCargaTotal().get(j) > veiculosCopia.get(aux).getCargaMaxima().get(j)){
 				vc = 1 + vc;
 			}
-		
 		}
 		if(vc < v){
 			return true;
@@ -165,33 +219,99 @@ public class PRVP {
 		else if(v < vc){
 			return false;
 		}
-		else if(v == vc && v !=0){
+		else if(v != 0){
 			return true;
 		}
 		
 		double duracacaoV = 0;
 		double duracacaoVC = 0;
 		double sum = 0;
-		for (Veiculo v : veiculos){
-			for(int j=0;j<v.getDuracaoTotal().size(); j++){
-				sum = sum + v.getDuracaoTotal()(j);
+		for (Veiculo veiculo : veiculos){
+			for(int j=0;j<veiculo.getDuracaoTotal().size(); j++){
+				sum = sum + veiculo.getDuracaoTotal().get(j);
 			}
 			duracacaoV = duracacaoV + sum;
 		}
-		for (Veiculo v : veiculosCopia){
-			for(int j=0;j<v.getDuracaoTotal().size(); j++){
-				sum = sum + v.getDuracaoTotal()(j);
+		for (Veiculo veiculo : veiculosCopia){
+			for(int j=0;j<veiculo.getDuracaoTotal().size(); j++){
+				sum = sum + veiculo.getDuracaoTotal().get(j);
 			}
 			duracacaoVC = duracacaoVC + sum;
 		}
-		if(duracacaoVC <= duracacaoV){
-			return true;
-		}
-		else{
-			return false;
+		return duracacaoVC <= duracacaoV;
+	}
+
+
+	public static List<Veiculo> pertubar(List<Veiculo> veiculos, List<Cliente> clientes, int opcao){
+		switch(opcao){
+			case 1 : return trocarCarro(veiculos, clientes);
+			//case 2 : return trocarDia(veiculos);
+			default: return null;
 		}
 	}
-	
+
+	public static List<Veiculo> trocarCarro(List<Veiculo> veiculos, List<Cliente> clientes){
+		Random random = new Random();
+		int r1, r2, r3, r4, aux, min, vc;
+		for(int i=0; i<veiculos.get(0).rotaDias.size(); i++){
+			if(veiculos.get(veiculos.size()-1).cargaTotal.get(i) > veiculos.get(veiculos.size()-1).cargaMaxima.get(i)){
+				r2 = random.nextInt(veiculos.get(veiculos.size()-1).rotaDias.get(i).size());
+				aux = veiculos.get(veiculos.size()-1).rotaDias.get(i).get(r2);
+				veiculos.get(veiculos.size()-1).rotaDias.get(i).remove(r2);
+				Cliente cliente = null;
+				for(Cliente c: clientes){
+					if (c.numeroCliente == aux){
+						cliente = c;
+						break;
+					}
+				}
+				veiculos.get(veiculos.size()-1).cargaTotal.set(i, veiculos.get(veiculos.size()-1).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(veiculos.size()-1).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, veiculos.size()-1));
+
+				min = veiculos.get(0).cargaTotal.get(i);
+				vc = 0;
+				for(int j=0;j<veiculos.size();j++){
+					if(min > veiculos.get(j).cargaTotal.get(i)){
+						min = veiculos.get(j).cargaTotal.get(i);
+						vc = j;
+					}
+				}
+				r4 = random.nextInt(veiculos.get(vc).rotaDias.get(i).size()-1);
+				veiculos.get(vc).rotaDias.get(i).add(r4, aux);
+				veiculos.get(vc).cargaTotal.set(i, veiculos.get(vc).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(vc).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, vc));
+
+			}else{
+				r1 = random.nextInt(veiculos.size());
+				r2 = random.nextInt(veiculos.get(r1).rotaDias.get(i).size());
+				aux = veiculos.get(r1).rotaDias.get(i).get(r2);
+				veiculos.get(r1).rotaDias.get(i).remove(r2);
+				Cliente cliente = null;
+				for(Cliente c: clientes){
+					if (c.numeroCliente == aux){
+						cliente = c;
+						break;
+					}
+				}
+				veiculos.get(r1).cargaTotal.set(i, veiculos.get(r1).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(r1).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, r1));
+
+				do {
+					r3 = random.nextInt(veiculos.size());
+				} while (r1 == r3);
+				r4 = random.nextInt(veiculos.get(r3).rotaDias.get(i).size()-1);
+				veiculos.get(r3).rotaDias.get(i).add(r4, aux);
+				veiculos.get(r3).cargaTotal.set(i, veiculos.get(r3).cargaTotal.get(i) - cliente.demand);
+				veiculos.get(r3).duracaoTotal.set(i, getDuracaoServico(veiculos, clientes, i, r3));
+			}
+		}
+		return veiculos;
+	}
+
+	public static List<Veiculo> trocarDia(List<Veiculo> veiculos){
+		return null;
+	}
+
 	public static Cliente gerarCliente(List<Cliente> clientes, Cliente anterior){
 		quickSortCliente(clientes, anterior, 0, clientes.size());
 		Random rand = new Random();
@@ -273,7 +393,7 @@ public class PRVP {
 		return x;
 	}
 
-	public static double getDuracaoServico(List<Veiculo> veiculos, List<Cliente> clientes,int i, int j) {
+	public static double getDuracaoServico(List<Veiculo> veiculos, List<Cliente> clientes, int i, int j) {
 		double x = 0;
 		for(int k = 0; k<veiculos.get(j).getRotaDias().get(i).size(); k++) {
 			x += clientes.get(veiculos.get(j).getRotaDias().get(i).get(k)).getServiceDuration();

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Veiculo {
+public class Veiculo implements Cloneable{
 	public List<List<Integer>> rotaDias;
 	public List<Integer> cargaMaxima;
 	public List<Double> duracaoMaxima;
@@ -55,10 +55,17 @@ public class Veiculo {
 	public void setCargaTotal(List<Integer> cargaTotal) {
 		this.cargaTotal = cargaTotal;
 	}
+
 	public List<List<Integer>> getRotaDias() {
 		return rotaDias;
 	}
+
 	public void setRotaDias(List<List<Integer>> rotaDias) {
 		this.rotaDias = rotaDias;
+	}
+
+	@Override
+	public Veiculo clone() throws CloneNotSupportedException {
+		return (Veiculo) super.clone();
 	}
 }

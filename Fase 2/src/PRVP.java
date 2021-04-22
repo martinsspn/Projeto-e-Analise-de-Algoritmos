@@ -6,13 +6,14 @@ public class PRVP {
 	
 	public static void main(String[] args) {
 		ManipuladorArquivo manarq = new ManipuladorArquivo();
-		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr05");
+		manarq.carregarArquivo("C:\\Users\\marti\\OneDrive\\Desktop\\C-pvrp\\pr10");
 		//m: número de veiculos. n: número de clientes. t: número de dias
 		//D: maximum duration of a route. Q: maximum load of a vehicle
 		List<Veiculo> veiculos = monteCarlo(manarq.getClientes(), manarq.getVeiculos(), manarq.getM(), manarq.getN(), manarq.getT());
 		List<Veiculo> copy = copiarVeiculos(veiculos);
 		int x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 		double aux, aux2;
+		System.out.println("Construção com método de Monte Carlo:");
 		for(int i=0;i<manarq.getT();i++) {
 			for(int j=0; j<veiculos.size();j++) {
 				aux = getDuracaoServico(veiculos, manarq.clientes, i, j);
@@ -41,6 +42,7 @@ public class PRVP {
 			System.out.println("Duração máxima ultrapassada!");
 		}
 
+		System.out.println("\nsolução melhorada com o GRASP:");
 		veiculos = buscaLocal(copy, manarq.clientes);
 		x = checarSolucao(veiculos, manarq.clientes, manarq.t);
 		for(int i=0;i<manarq.getT();i++) {

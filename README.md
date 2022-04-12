@@ -1,4 +1,4 @@
-# PAA
+# Projeto e Análise de Algoritmos
 Trabalho feito para obtenção da aprovação na disciplina: Projeto e Análise de algoritmos.
 
 Esse projeto busca implementar uma algoritmo para a resolução do problema do roteamento de veiculos com periodicidade
